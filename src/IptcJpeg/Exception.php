@@ -9,6 +9,8 @@
  * @link     https://github.com/agutoli/Image_Iptc/
  */
 
+namespace IptcJpeg;
+
 /**
  * Class to manipulate EXIF and image IPTC
  *
@@ -19,6 +21,5 @@
  * @link     https://github.com/agutoli/Image_Iptc/
  */
 
-class Iptc_Exception extends Exception 
+class Exception extends \Exception 
 {}
-

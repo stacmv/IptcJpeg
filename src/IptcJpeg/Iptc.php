@@ -9,10 +9,7 @@
  * @link     https://github.com/agutoli/Image_Iptc/
  */
 
-/**
- * Dependencies
- */
-require 'Iptc/Exception.php';
+namespace IptcJpeg;
 
 /**
  * Class to manipulate EXIF and image IPTC
@@ -92,54 +89,59 @@ class Iptc
      *
      * @param string $filename - Name of file
      *
-     * @throw Iptc_Exception
-     * @see http://www.php.net/manual/pt_BR/book.image.php - PHP GD
+     * @see http://php.net/manual/en/book.image.php - PHP GD
      * @see iptcparse
      * @see getimagesize
-     * @return void
+     * @throws Exception
      */ 
     public function __construct($filename) 
     {
-
         /**
          * Check PHP version
          * @since 2.0.1
          */
         if (version_compare(phpversion(), '5.1.3', '<') === true) {
-            throw new Iptc_Exception(
+            throw new Exception(
                 'ERROR: Your PHP version is '.phpversion() . 
                     '. Iptc class requires PHP 5.1.3 or newer.'
             );
         }
 
-        if ( ! extension_loaded('gd') ) {
-            throw new Iptc_Exception(
+        if (!extension_loaded('gd') ) {
+            throw new Exception(
                 'Since PHP 4.3 there is a bundled version of the GD lib.'
             );
         }
        
-        if ( ! file_exists($filename) ) {
-            throw new Iptc_Exception(
+        if (!file_exists($filename) ) {
+            throw new Exception(
                 'Image not found!'
             );
         }
        
-        if ( ! is_writable($filename) ) {
-            throw new Iptc_Exception(
+        if (!is_writable($filename) ) {
+            throw new Exception(
                 "File \"{$filename}\" is not writable!"
             );
         }
 
         $parts = explode('.', strtolower($filename));
         
-        if ( ! in_array(end($parts), $this->_allowedExt) ) {
-            throw new Iptc_Exception(
+        if (!in_array(end($parts), $this->_allowedExt) ) {
+            throw new Exception(
                 'Support only for the following extensions: ' . 
                     implode(',', $this->_allowedExt)
             ); 
         }
 
         $size           = getimagesize($filename, $imageinfo);
+
+        if (empty($imageinfo['mime']) || $imageinfo['mime'] != 'image/jpeg') {
+            throw new Exception(
+                'Support only JPEG images'
+            );
+        }
+
         $this->_hasMeta = isset($imageinfo["APP13"]);
         if ($this->_hasMeta) {
             $this->_meta = iptcparse($imageinfo["APP13"]);
@@ -178,7 +180,7 @@ class Iptc
     public function prepend($tag, $data)
     {
         $data = $this->_charset_decode($data);
-        if ( ! empty($this->_meta["2#{$tag}"])) {
+        if (!empty($this->_meta["2#{$tag}"])) {
             array_unshift($this->_meta["2#{$tag}"], $data);
             $data = $this->_meta["2#{$tag}"];
         }
@@ -199,7 +201,7 @@ class Iptc
     public function append($tag, $data)
     {
         $data = $this->_charset_decode($data);
-        if ( ! empty($this->_meta["2#{$tag}"])) {
+        if (!empty($this->_meta["2#{$tag}"])) {
             array_push($this->_meta["2#{$tag}"], $data);
             $data = $this->_meta["2#{$tag}"];
         }
@@ -278,10 +280,10 @@ class Iptc
      *
      * @param Integer $rec - Type of tag ex. 2
      * @param Integer $dat - code of tag ex. 025 or 000 etc
-     * @param mixed   $val - any caracterer
+     * @param mixed   $val - any character
      * 
      * @access public
-     * @return binary source
+     * @return string binary source
      */
     public function iptcMakeTag($rec, $dat, $val) 
     {
@@ -308,15 +310,15 @@ class Iptc
      * with the new "IPTC" recorded
      *
      * @access public
-     * @return binary source
+     * @return string binary source
+     * @throws Exception
      */
     public function write() 
     {
-
-        //@see http://php.net/manual/pt_BR/function.iptcembed.php 
+        //@see http://php.net/manual/en/function.iptcembed.php
         $content = iptcembed($this->binary(), $this->_filename, 0);
         if ($content === false) {
-            throw new Iptc_Exception(
+            throw new Exception(
                 'Failed to save IPTC data into file'
             );
         }
@@ -336,7 +338,7 @@ class Iptc
      * completely remove all tags "IPTC" image 
      *
      * @access public
-     * @return binary source
+     * @return string binary source
      */
     public function removeAllTags() 
     {
@@ -355,7 +357,7 @@ class Iptc
      * @param Integer $len - size of the character
      *
      * @access public
-     * @return binary source
+     * @return string binary source
      */
     private function _testBitSize($len) 
     {
@@ -379,12 +381,13 @@ class Iptc
      *
      * @param String $data
      * @access private
-     * @return decoded string
+     * @return string decoded string
      */
-    private function _charset_decode($data) {
+    private function _charset_decode($data)
+    {
         $result = array();
         if (is_array($data)) {
-            $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($data)); 
+            $iterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($data));
             foreach($iterator as $key=>$value) {
                 $result[] = utf8_decode($value);
             }
@@ -399,12 +402,13 @@ class Iptc
      *
      * @param String $data
      * @access private
-     * @return encoded string
+     * @return string encoded string
      */
-    private function _charset_encode($data) {
+    private function _charset_encode($data)
+    {
         $result = array();
         if (is_array($data)) {
-            $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($data)); 
+            $iterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($data));
             foreach($iterator as $key=>$value) {
                 $result[] = utf8_encode($value);
             }

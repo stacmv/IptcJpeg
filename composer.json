@@ -1,0 +1,26 @@
+{
+    "name": "alexzv/iptc-jpeg",
+    "description": "Specific class for manipulating IPTC/EXIF metadata of jpeg images",
+    "keywords": ["image", "jpeg", "iptc", "exif"],
+    "homepage": "http://github.com/alexzv/IptcJpeg",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bruno Thiago Leite Agutoli",
+            "email": "bruno.agutoli@gmail.com",
+            "homepage": "https://github.com/agutoli/Image_Iptc"
+        },
+        {
+          "name": "Alex Zet",
+          "email": "zetdev@gmail.com",
+          "homepage": "https://github.com/alexzv/IptcJpeg"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-4": {"IptcJpeg\\": "src/IptcJpeg"}
+    }
+}

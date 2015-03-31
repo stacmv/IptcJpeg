@@ -1,15 +1,13 @@
 <?php
 
-//class iptc
-require '../Iptc.php';
+use IptcJpeg\Iptc;
 
 class writeAndReadTest extends PHPUnit_Framework_TestCase
 {
-
     private $_iptc;
 
     public function setUp() {
-        $this->_iptc = new Iptc('../logo_php.jpg');
+        $this->_iptc = new Iptc(__DIR__ . '/images/logo_php.jpg');
         $this->_iptc->set(Iptc::OBJECT_NAME, 'test');
         $this->_iptc->write();
     }

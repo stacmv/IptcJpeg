@@ -10,7 +10,7 @@ Examples
 
 ### Writing tags
 
-    require 'Iptc.php';
+    use IptcJpeg\Iptc;
 
     $iptc = new Iptc('et_betrayed.jpg');
     
