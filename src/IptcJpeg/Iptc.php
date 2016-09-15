@@ -136,7 +136,7 @@ class Iptc
 
         $size           = getimagesize($filename, $imageinfo);
 
-        if (empty($imageinfo['mime']) || $imageinfo['mime'] != 'image/jpeg') {
+        if (empty($size['mime']) || $size['mime'] != 'image/jpeg') {
             throw new Exception(
                 'Support only JPEG images'
             );
