@@ -1,8 +1,8 @@
 {
-    "name": "alexzv/iptc-jpeg",
+    "name": "optimit/iptc-jpeg",
     "description": "Specific class for manipulating IPTC/EXIF metadata of jpeg images",
     "keywords": ["image", "jpeg", "iptc", "exif"],
-    "homepage": "http://github.com/alexzv/IptcJpeg",
+    "homepage": "http://github.com/stacmv/IptcJpeg",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -15,6 +15,11 @@
           "name": "Alex Zet",
           "email": "zetdev@gmail.com",
           "homepage": "https://github.com/alexzv/IptcJpeg"
+        },
+        {
+          "name": "Vyacheslav Matsnev",
+          "email": "stacmv@gmail.com",
+          "homepage": "https://github.com/stacmv/IptcJpeg"
         }
     ],
     "require": {

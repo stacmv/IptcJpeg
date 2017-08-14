@@ -85,6 +85,13 @@ class Iptc
     private $_filename;
     
     /**
+     * Set this to false if file's IPTC data is already UTF-8 encoded
+     *
+     * @var Boolean
+     */
+    private $_encodeToUTF8;
+    
+    /**
      * Constructor class
      *
      * @param string $filename - Name of file
@@ -94,7 +101,7 @@ class Iptc
      * @see getimagesize
      * @throws Exception
      */ 
-    public function __construct($filename) 
+    public function __construct($filename, $encodeToUTF8 = true) 
     {
         /**
          * Check PHP version
@@ -148,6 +155,7 @@ class Iptc
         }
 
         $this->_filename = $filename;
+        $this->_encodeToUTF8 = $encodeToUTF8;
     }
 
 
@@ -223,7 +231,9 @@ class Iptc
     public function fetch($tag) 
     {
         if (isset($this->_meta["2#{$tag}"])) {
-            return $this->_charset_encode($this->_meta["2#{$tag}"][0]);
+            return $this->_encodeToUTF8 
+                     ? $this->_charset_encode($this->_meta["2#{$tag}"][0])
+                     : $this->_meta["2#{$tag}"][0];
         }
         return false;
     }
@@ -241,7 +251,9 @@ class Iptc
     public function fetchAll($tag) 
     {
         if (isset($this->_meta["2#{$tag}"])) {
-            return $this->_charset_encode($this->_meta["2#{$tag}"]);
+            return $this->_encodeToUTF8 
+                    ? $this->_charset_encode($this->_meta["2#{$tag}"])
+                    : $this->_meta["2#{$tag}"];
         }
         return false;
     }
@@ -254,7 +266,9 @@ class Iptc
      */
     public function dump() 
     {
-        return $this->_charset_encode(print_r($this->_meta, true));
+        return $this->_encodeToUTF8
+                ? $this->_charset_encode(print_r($this->_meta, true))
+                : print_r($this->_meta, true);
     }
 
     /**
